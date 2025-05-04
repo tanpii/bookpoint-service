@@ -18,5 +18,4 @@ class ReservationController(
     fun cancelBookReservation() = userContext {
         reservationService.removeClientReservation()
     }
-
 }

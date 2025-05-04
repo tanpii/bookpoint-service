@@ -13,7 +13,7 @@ import ru.tanpii.bookpoint.support.pageRequest
 class AuthorService(
     private val authorRepository: AuthorRepository,
 
-    @Qualifier("authorMinioImageService")
+    @Qualifier("authorS3ImageService")
     private val imageService: ImageService
 ) {
 

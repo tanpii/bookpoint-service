@@ -5,13 +5,25 @@ spring:
   application:
     name: bookpoint
   datasource:
-    url: jdbc:postgresql://localhost:15432/postgres
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://bookpoint_db:5432/bookpoint_db
+    username: bookpoint_user
+    password: bookpoint_password
     driverClassName: org.postgresql.Driver
   flyway:
     enabled: true
     validate-on-migrate: true
+
+management:
+  endpoint:
+    health:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+  server:
+    port: 8081
 
 api:
   management:
@@ -22,18 +34,18 @@ api:
     services:
       authpoint: "AUTH_POINT_INTERNAL_KEY"
 
+web-clients:
+  clients:
+    achievepoint:
+      destination: http://tochkaszapyatoi.ru:8083
+      headers:
+        X-INTERNAL-API: "BOOK_POINT_INTERNAL_KEY"
+
 grpc:
   client:
     authpoint:
-      address: localhost:9098
+      address: static://tochkaszapyatoi.ru:9098
       negotiation-type: plaintext
-
-minio:
-  authorBucket: author
-  bookBucket: book
-  url: http://localhost:19000
-  access_key: bookpoint
-  secret_key: bookpoint
 
 jobs:
   reservationCheck:
@@ -44,12 +56,10 @@ kafka:
   topics:
     notification:
       destination: notifypoint.notifications
-    stats:
-      destination: achievepoint.stats
   clusters:
     default:
       bootstrap-servers:
-        - localhost:29092
+        - tochkaszapyatoi.ru:29092
       properties:
         acks: -1
         delivery.timeout.ms: 90000

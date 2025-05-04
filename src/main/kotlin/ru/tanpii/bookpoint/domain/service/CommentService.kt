@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service
 import ru.tanpii.bookpoint.api.model.request.CommentRequest
 import ru.tanpii.bookpoint.domain.model.entity.CommentEntity
 import ru.tanpii.bookpoint.domain.repository.CommentRepository
+import ru.tanpii.bookpoint.infrastructure.client.AchievepointHttpClient
+import ru.tanpii.bookpoint.infrastructure.client.CommentStatsEvent
 import ru.tanpii.bookpoint.infrastructure.grpc.AuthpointService
-import ru.tanpii.bookpoint.infrastructure.kafka.CommentStatsEvent
-import ru.tanpii.bookpoint.infrastructure.kafka.KafkaStatsService
 import ru.tanpii.bookpoint.support.mapper.toDto
 import ru.tanpii.bookpoint.support.mapper.toPage
 import ru.tanpii.bookpoint.support.pageRequest
@@ -19,7 +19,7 @@ import java.util.*
 class CommentService(
     private val authpointService: AuthpointService,
     private val commentRepository: CommentRepository,
-    private val statsService: KafkaStatsService,
+    private val achievepointClient: AchievepointHttpClient,
 ) {
     fun getBookComments(bookId: Long, page: Int) = pageRequest(page) {
         commentRepository.findAllByBookId(it, bookId)
@@ -44,7 +44,7 @@ class CommentService(
     }.toDto(user.userId) { uuid ->
         getUserData(uuid)
     }.also {
-        statsService.sendCommentStats(
+        achievepointClient.postUserStats(
             CommentStatsEvent(
                 userId = user.userId,
                 stats = CommentStatsEvent.CommentStats(

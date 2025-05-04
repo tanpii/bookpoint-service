@@ -23,4 +23,13 @@ class AuthenticationEnrichmentInterceptor(
             response.status = HttpStatus.UNAUTHORIZED.value()
             false
         }
+
+    override fun afterCompletion(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        handler: Any,
+        ex: Exception?
+    ) {
+        SecurityContextHolder.securityContext.remove()
+    }
 }

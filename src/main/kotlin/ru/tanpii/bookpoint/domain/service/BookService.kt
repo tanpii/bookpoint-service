@@ -25,7 +25,7 @@ class BookService(
     private val rentRepository: RentRepository,
     private val reservationRepository: ReservationRepository,
     private val authpointService: AuthpointService,
-    @Qualifier("bookMinioImageService")
+    @Qualifier("bookS3ImageService")
     private val imageService: ImageService
 ) {
 
